@@ -1,0 +1,13 @@
+.butt{
+    display:flex;
+    justify-content: center;
+}
+.cont{
+    display: block;
+    justify-self: end;
+    
+}
+.b{
+    display: flex;
+    justify-content: center;
+}
