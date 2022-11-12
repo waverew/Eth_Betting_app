@@ -24,9 +24,16 @@ const state = {
             
                 <p>{team}</p>
                 <div className="b">
-                    <button onClick={()=>{state.team=team; state.amount=amount; console.log(state)}}>
+                    <button onClick={()=>{
+                        state.team=team; 
+                        state.amount=amount; 
+                        console.log(state);
+                        window.localStorage.setItem("", JSON.stringify(state)); 
+                        console.log(window.localStorage);
+                    }}>
                     Submit
                     </button>
+                    <button onClick={()=>{window.localStorage.clear()}}>Clear</button>
                 </div>
             </div>
         </div>

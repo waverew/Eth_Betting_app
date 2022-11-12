@@ -2,7 +2,6 @@ import './Main.css';
 import { ethers } from "ethers";
 import { useEffect, useRef, useState } from 'react';
 import {abb} from "./ABI";
-import "./Button";
 import Button from './Button';
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const abi = abb;
