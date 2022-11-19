@@ -3,3 +3,10 @@
     width: 100vw;
     background-color: bisque;
 }
+.mr{
+    margin-bottom: 3rem;
+}
+.buttons-cont{
+    display: flex;
+    justify-content: center;
+}

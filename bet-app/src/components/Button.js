@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./Button.css";
-const Button = () =>{
+const Button = (props) =>{
 const [team, setTeam] = useState("");
 const [amount, setAmount] = useState("");
 const state = {
@@ -28,7 +28,7 @@ const state = {
                         state.team=team; 
                         state.amount=amount; 
                         console.log(state);
-                        window.localStorage.setItem("", JSON.stringify(state)); 
+                        window.localStorage.setItem(props.userKey, JSON.stringify(state)); 
                         console.log(window.localStorage);
                     }}>
                     Submit

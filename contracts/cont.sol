@@ -2,11 +2,16 @@
 
 pragma solidity ^0.8.0;
 contract beting {
-    mapping (address => uint) betAmount; 
-    mapping(address => bool) userBetted;
-    mapping(address => bool) votes; 
+    mapping (address => uint) private betAmount; 
+    mapping(address => bool) private userBetted;
+    mapping(address => bool) private userVoted
+    mapping(string => uint) private amountOfTeamVotes;
+    mapping(address => string) private teamUserBetted;
+    mapping(address => bool) private userWon;
     address[] public participants; // people who are betting
     string[] public teams; // teams to bet on
+    string public winnerTeam
+    address[] public winners;
     address private owner;
     uint private amount;
     event OwnerSet(address indexed oldOwner, address indexed newOwner);
@@ -19,7 +24,8 @@ contract beting {
         _;
     }
     event setOwneship(address indexed oldOwner, address indexed newOwner);
-    constructor(){
+    constructor(string[] memory _teams){
+        teams = _teams;
         owner = msg.sender;
         emit setOwneship(address(0), owner);
     }
@@ -34,14 +40,45 @@ contract beting {
     fallback() external payable nonZeroValue{
         amount += msg.value/ 1 ether;
     }
-    function makeBet(uint _amount) public payable{
+    function makeBet(uint _amount, string _team) nonZeroValue public payable{
+        require(userBetted[msg.sender]== false, "You already betted");
         userBetted[msg.sender] = true;
+        teamUserBetted[msg.sender] = _team;
         amount += _amount;
-
-        
     }
-
-    
-
-
+    function voteWinner(string memory _team){
+        require(userBetted[msg.sender] == true, "You did not bet");
+        require(userVoted[msg.sender] == false, "You already voted");
+        userVoted[msg.sender] = true;
+        amountOfTeamVotes[_team]+=1;
+    }
+    function getWinner() public returns (address[] memory _winner){
+        for (uint i; i<participants.length; i++){
+            require(userVoted[i]==true, "Everybody has to vote");
+        }
+        uint maxVotes = 0;
+        for (uint i; i<teams.lentgh; i++){
+            if(amountOfTeamVotes[i]>maxVotes){
+                maxVotes = amountOfTeamVotes[i];
+                winnerTeam = teams[i];
+            }
+        }
+        for (uint i; i<participants.length; i++){
+            if (keccak256(abi.encodePacked(teamUserBetted[participants[i]])) == keccak256(abi.encodePacked(winnerTeam)){
+                if(userWon[participants[i]] == false){
+                    userWon[paticipants[i]] = true;
+                    winners.push(participants[i]);
+                }
+            }
+        }
+        return winners;
+    }
+    function transferAmount() public isOwner{
+        uint bal = address(this).balance;
+        for(uint i = 0; i<winners.length;i++){
+            (bool sent, ) = payable(winners[i]).call{value: (bal/winner.length - 10000000000000000)}("");
+            require(sent, "Failed to send Ether");
+        }
+        selfdestruct(payable(owner));
+    }
 }
